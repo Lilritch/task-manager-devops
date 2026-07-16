@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  ACCESS_TOKEN_EXPIRE_MINUTES: "60"
+  DATABASE_URL: postgresql://taskuser:taskpass@postgres:5432/taskmanager

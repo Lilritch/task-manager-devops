@@ -201,7 +201,9 @@ Useful metrics:
 3. GitHub Issues sync
 4. Failed GitHub Actions sync
 5. Slack sync
-6. Calendar sync
-7. Notifications
-8. Prometheus and Grafana
-9. Kubernetes, Helm, and Argo CD
+6. Kubernetes manifests
+7. Helm chart
+8. Argo CD
+9. Calendar sync
+10. Notifications
+11. Prometheus and Grafana

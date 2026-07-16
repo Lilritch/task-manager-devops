@@ -24,7 +24,7 @@ app code → containers → CI → Kubernetes → GitOps → monitoring.
 - [x] GitHub Issues sync
 - [x] Failed GitHub Actions sync
 - [x] Slack slash-command endpoint
-- [ ] Kubernetes manifests
+- [x] Kubernetes manifests
 - [ ] Helm chart
 - [ ] Argo CD GitOps deployment
 - [ ] Prometheus + Grafana
@@ -98,14 +98,26 @@ SLACK_ALLOW_UNSIGNED=true
 .
 ├── frontend/          Next.js app
 ├── backend/           FastAPI app
+├── k8s/               Kubernetes manifests
 ├── docker-compose.yml Local dev orchestration
 ├── .github/workflows/ CI pipeline
-├── k8s/                (added in Phase 4)
 ├── helm/               (added in Phase 4)
 └── README.md
 ```
 
+## Kubernetes
+
+Kubernetes manifests live in `k8s/base`.
+
+Deploy with:
+
+```bash
+kubectl apply -k k8s/base
+```
+
+See `k8s/README.md` for cluster setup, ingress, image, and secret steps.
+
 ## Roadmap
 
-See the step-by-step build roadmap in project notes — next up is wiring the frontend
-task UI to the backend, then containerizing, then Kubernetes + Argo CD + monitoring.
+See the step-by-step build roadmap in project notes — next up is wrapping the
+Kubernetes manifests into a Helm chart, then Argo CD and monitoring.
