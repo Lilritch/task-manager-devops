@@ -28,7 +28,7 @@ jobs:
         run: ruff check app
 
       - name: Test
-        run: pytest -q
+        run: PYTHONPATH=. pytest -q
 
   frontend:
     runs-on: ubuntu-latest
