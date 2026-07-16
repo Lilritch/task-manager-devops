@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "task-manager.appConfigName" . }}
+  labels:
+    {{- include "task-manager.labels" . | nindent 4 }}
+data:
+  ACCESS_TOKEN_EXPIRE_MINUTES: {{ .Values.app.accessTokenExpireMinutes | quote }}
+  DATABASE_URL: {{ printf "postgresql://%s:%s@%s:%v/%s" .Values.postgres.user .Values.postgres.password (include "task-manager.postgresName" .) (.Values.service.postgres.port | int) .Values.postgres.database | quote }}

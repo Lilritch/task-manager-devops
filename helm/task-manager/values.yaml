@@ -1,0 +1,46 @@
+replicaCount:
+  backend: 1
+  frontend: 1
+
+images:
+  backend:
+    repository: ghcr.io/lilritch/task-manager-devops/backend
+    tag: latest
+    pullPolicy: Always
+  frontend:
+    repository: ghcr.io/lilritch/task-manager-devops/frontend
+    tag: latest
+    pullPolicy: Always
+  postgres:
+    repository: postgres
+    tag: 16-alpine
+    pullPolicy: IfNotPresent
+
+service:
+  backend:
+    port: 8000
+  frontend:
+    port: 3000
+  postgres:
+    port: 5432
+
+ingress:
+  enabled: true
+  className: nginx
+  host: task-manager.local
+
+app:
+  accessTokenExpireMinutes: "60"
+  secretKey: change-me-before-real-deploy
+  githubToken: ""
+  githubOwner: Lilritch
+  githubRepo: task-manager-devops
+  slackSigningSecret: ""
+  slackDefaultUserEmail: ""
+  slackAllowUnsigned: "false"
+
+postgres:
+  user: taskuser
+  password: taskpass
+  database: taskmanager
+  storage: 1Gi

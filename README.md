@@ -27,7 +27,7 @@ monitoring.
 - [x] Failed GitHub Actions sync
 - [x] Slack slash-command endpoint
 - [x] Kubernetes manifests
-- [ ] Helm chart
+- [x] Helm chart
 - [ ] Argo CD GitOps deployment
 - [ ] Prometheus + Grafana
 - [ ] Architecture diagram
@@ -119,7 +119,25 @@ kubectl apply -k k8s/base
 
 See `k8s/README.md` for cluster setup, ingress, image, and secret steps.
 
+## Helm
+
+The Helm chart lives in `helm/task-manager`.
+
+Install or upgrade the app with:
+
+```bash
+helm upgrade --install task-manager helm/task-manager -n task-manager --create-namespace
+```
+
+For a safe test install that does not touch the existing `task-manager`
+namespace:
+
+```bash
+helm upgrade --install task-manager helm/task-manager -n task-manager-helm --create-namespace --set ingress.host=task-manager-helm.local
+```
+
+See `helm/README.md` for chart values and verification commands.
+
 ## Roadmap
 
-Next up: wrap the Kubernetes manifests into a Helm chart, then add Argo CD and
-monitoring.
+Next up: add Argo CD GitOps deployment, then monitoring.
