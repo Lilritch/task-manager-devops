@@ -20,6 +20,9 @@ app code → containers → CI → Kubernetes → GitOps → monitoring.
 - [x] Next.js frontend skeleton
 - [x] Dockerfiles + docker-compose for local dev
 - [x] GitHub Actions CI (lint/test/build)
+- [x] DevOps dashboard task sources and filters
+- [x] GitHub Issues sync
+- [x] Failed GitHub Actions sync
 - [ ] Kubernetes manifests
 - [ ] Helm chart
 - [ ] Argo CD GitOps deployment
@@ -37,6 +40,29 @@ docker compose up --build
 - Frontend: http://localhost:3000
 - Backend API docs: http://localhost:8000/docs
 - Postgres: localhost:5433
+
+## DevOps dashboard integrations
+
+The dashboard supports manual tasks, GitHub Issues imports, and failed GitHub
+Actions imports.
+
+For public repositories, log in and enter the GitHub owner/repo on the tasks
+page. For private repositories, add a GitHub token to `backend/.env`:
+
+```env
+GITHUB_TOKEN=your_token_here
+GITHUB_OWNER=your-github-username
+GITHUB_REPO=your-repo-name
+```
+
+Then rebuild the backend:
+
+```bash
+docker compose up -d --build backend
+```
+
+See `docs/devops-dashboard-roadmap.md` for the full GitHub, Slack, Calendar,
+notifications, and monitoring plan.
 
 ## Project structure
 

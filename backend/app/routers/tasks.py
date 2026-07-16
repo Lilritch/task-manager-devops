@@ -9,14 +9,32 @@ router = APIRouter(prefix="/tasks", tags=["tasks"])
 
 @router.get("/", response_model=list[schemas.TaskOut])
 def list_tasks(
+    source: str | None = None,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(auth.get_current_user),
 ):
-    return (
-        db.query(models.Task)
-        .filter(models.Task.owner_id == current_user.id)
-        .order_by(models.Task.created_at.desc())
-        .all()
+    query = db.query(models.Task).filter(models.Task.owner_id == current_user.id)
+    if source:
+        query = query.filter(models.Task.source == source)
+    return query.order_by(models.Task.created_at.desc()).all()
+
+
+@router.get("/stats", response_model=schemas.TaskStats)
+def task_stats(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(auth.get_current_user),
+):
+    tasks = db.query(models.Task).filter(models.Task.owner_id == current_user.id).all()
+    by_source: dict[str, int] = {}
+    for task in tasks:
+        by_source[task.source] = by_source.get(task.source, 0) + 1
+
+    completed = sum(1 for task in tasks if task.completed)
+    return schemas.TaskStats(
+        total=len(tasks),
+        open=len(tasks) - completed,
+        completed=completed,
+        by_source=by_source,
     )
 
 

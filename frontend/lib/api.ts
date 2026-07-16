@@ -5,7 +5,26 @@ export type Task = {
   title: string;
   description: string;
   completed: boolean;
+  source: string;
+  external_id: string | null;
+  external_url: string | null;
+  priority: string;
+  due_date: string | null;
   created_at: string;
+};
+
+export type TaskStats = {
+  total: number;
+  open: number;
+  completed: number;
+  by_source: Record<string, number>;
+};
+
+export type SyncResult = {
+  source: string;
+  imported: number;
+  skipped: number;
+  message: string;
 };
 
 function authHeaders(): HeadersInit {
@@ -35,17 +54,38 @@ export async function register(email: string, password: string): Promise<void> {
   if (!res.ok) throw new Error("Registration failed");
 }
 
-export async function getTasks(): Promise<Task[]> {
-  const res = await fetch(`${API_URL}/tasks/`, { headers: authHeaders() });
+async function parseError(res: Response, fallback: string): Promise<Error> {
+  try {
+    const data = await res.json();
+    return new Error(data.detail || fallback);
+  } catch {
+    return new Error(fallback);
+  }
+}
+
+export async function getTasks(source?: string): Promise<Task[]> {
+  const url = new URL(`${API_URL}/tasks/`);
+  if (source && source !== "all") url.searchParams.set("source", source);
+  const res = await fetch(url, { headers: authHeaders() });
   if (!res.ok) throw new Error("Failed to load tasks");
   return res.json();
 }
 
-export async function createTask(title: string, description = ""): Promise<Task> {
+export async function getTaskStats(): Promise<TaskStats> {
+  const res = await fetch(`${API_URL}/tasks/stats`, { headers: authHeaders() });
+  if (!res.ok) throw new Error("Failed to load task stats");
+  return res.json();
+}
+
+export async function createTask(
+  title: string,
+  description = "",
+  priority = "medium"
+): Promise<Task> {
   const res = await fetch(`${API_URL}/tasks/`, {
     method: "POST",
     headers: { "Content-Type": "application/json", ...authHeaders() },
-    body: JSON.stringify({ title, description }),
+    body: JSON.stringify({ title, description, priority }),
   });
   if (!res.ok) throw new Error("Failed to create task");
   return res.json();
@@ -53,7 +93,7 @@ export async function createTask(title: string, description = ""): Promise<Task>
 
 export async function updateTask(
   id: number,
-  patch: Partial<Pick<Task, "title" | "description" | "completed">>
+  patch: Partial<Pick<Task, "title" | "description" | "completed" | "priority">>
 ): Promise<Task> {
   const res = await fetch(`${API_URL}/tasks/${id}`, {
     method: "PATCH",
@@ -70,4 +110,30 @@ export async function deleteTask(id: number): Promise<void> {
     headers: authHeaders(),
   });
   if (!res.ok) throw new Error("Failed to delete task");
+}
+
+export async function syncGitHubIssues(
+  owner: string,
+  repo: string
+): Promise<SyncResult> {
+  const res = await fetch(`${API_URL}/integrations/github/issues/sync`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...authHeaders() },
+    body: JSON.stringify({ owner, repo }),
+  });
+  if (!res.ok) throw await parseError(res, "Failed to sync GitHub issues");
+  return res.json();
+}
+
+export async function syncGitHubActions(
+  owner: string,
+  repo: string
+): Promise<SyncResult> {
+  const res = await fetch(`${API_URL}/integrations/github/actions/sync`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...authHeaders() },
+    body: JSON.stringify({ owner, repo }),
+  });
+  if (!res.ok) throw await parseError(res, "Failed to sync GitHub Actions");
+  return res.json();
 }

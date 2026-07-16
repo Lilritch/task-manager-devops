@@ -24,6 +24,11 @@ class Task(Base):
     title = Column(String, nullable=False)
     description = Column(String, default="")
     completed = Column(Boolean, default=False)
+    source = Column(String, default="manual", nullable=False)
+    external_id = Column(String, nullable=True)
+    external_url = Column(String, nullable=True)
+    priority = Column(String, default="medium", nullable=False)
+    due_date = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
