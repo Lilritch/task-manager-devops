@@ -15,7 +15,7 @@ spec:
       containers:
         - name: backend
           image: ghcr.io/lilritch/task-manager-devops/backend:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 8000

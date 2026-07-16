@@ -15,7 +15,7 @@ spec:
       containers:
         - name: frontend
           image: ghcr.io/lilritch/task-manager-devops/frontend:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 3000
