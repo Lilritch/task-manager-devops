@@ -23,6 +23,7 @@ app code → containers → CI → Kubernetes → GitOps → monitoring.
 - [x] DevOps dashboard task sources and filters
 - [x] GitHub Issues sync
 - [x] Failed GitHub Actions sync
+- [x] Slack slash-command endpoint
 - [ ] Kubernetes manifests
 - [ ] Helm chart
 - [ ] Argo CD GitOps deployment
@@ -44,7 +45,8 @@ docker compose up --build
 ## DevOps dashboard integrations
 
 The dashboard supports manual tasks, GitHub Issues imports, and failed GitHub
-Actions imports.
+Actions imports. It also includes a Slack slash-command endpoint for creating
+tasks from Slack once you configure a Slack app.
 
 For public repositories, log in and enter the GitHub owner/repo on the tasks
 page. For private repositories, add a GitHub token to `backend/.env`:
@@ -63,6 +65,32 @@ docker compose up -d --build backend
 
 See `docs/devops-dashboard-roadmap.md` for the full GitHub, Slack, Calendar,
 notifications, and monitoring plan.
+
+### Slack slash command
+
+The backend endpoint is:
+
+```text
+POST /integrations/slack/command
+```
+
+Manual setup required:
+
+1. Create a Slack app.
+2. Add a slash command like `/task`.
+3. Point the slash command at your deployed backend URL.
+4. Add these values to `backend/.env`:
+
+```env
+SLACK_SIGNING_SECRET=your_slack_signing_secret
+SLACK_DEFAULT_USER_EMAIL=the_email_you_use_to_log_in
+```
+
+For local curl testing only:
+
+```env
+SLACK_ALLOW_UNSIGNED=true
+```
 
 ## Project structure
 

@@ -89,23 +89,9 @@ Use the same GitHub setup from Step 2.
 
 ## Step 4: Slack Sync
 
-This is the next integration to build after GitHub.
+The first Slack integration is built as a slash command endpoint.
 
-Real Slack sync needs manual setup outside this repo:
-
-1. Create a Slack app in your Slack workspace.
-2. Add a slash command such as `/task`.
-3. Point the slash command to a backend endpoint.
-4. Store Slack secrets in `backend/.env`.
-5. Map Slack users to app users.
-
-Suggested future endpoint:
-
-```text
-POST /integrations/slack/events
-```
-
-Example Slack command:
+Goal:
 
 ```text
 /task Fix the failed production deployment
@@ -116,6 +102,43 @@ Expected result:
 ```text
 Source: Slack
 Title: Fix the failed production deployment
+```
+
+Real Slack sync needs manual setup outside this repo:
+
+1. Create a Slack app in your Slack workspace.
+2. Add a slash command such as `/task`.
+3. Point the slash command to this backend endpoint:
+
+```text
+POST /integrations/slack/command
+```
+
+4. Store Slack secrets in `backend/.env`.
+5. Map Slack users to app users.
+
+For this first version, Slack tasks are assigned to one configured dashboard
+user:
+
+```env
+SLACK_SIGNING_SECRET=your_slack_signing_secret
+SLACK_DEFAULT_USER_EMAIL=the_email_you_use_to_log_in
+```
+
+For local testing only, you can temporarily allow unsigned Slack-style requests:
+
+```env
+SLACK_ALLOW_UNSIGNED=true
+```
+
+Do not use `SLACK_ALLOW_UNSIGNED=true` in a real deployment.
+
+Local curl test:
+
+```bash
+curl -X POST http://localhost:8000/integrations/slack/command \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  --data "text=Fix the failed deployment&user_id=U123&channel_id=C123"
 ```
 
 ## Step 5: Calendar Sync

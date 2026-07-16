@@ -1,7 +1,11 @@
+import hashlib
+import hmac
 import os
+import time
 
 import httpx
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import PlainTextResponse
 from sqlalchemy.orm import Session
 
 from app import auth, models, schemas
@@ -47,6 +51,21 @@ def _existing_external_ids(
         .all()
     )
     return {row[0] for row in rows if row[0]}
+
+
+def _existing_external_id_for_user(
+    db: Session, user: models.User, source: str, external_id: str
+) -> bool:
+    return (
+        db.query(models.Task)
+        .filter(
+            models.Task.owner_id == user.id,
+            models.Task.source == source,
+            models.Task.external_id == external_id,
+        )
+        .first()
+        is not None
+    )
 
 
 def _get_github_json(path: str, params: dict[str, str | int]) -> dict | list:
@@ -170,3 +189,86 @@ def sync_failed_github_actions(
         skipped=skipped,
         message=f"Synced failed workflow runs from {owner}/{repo}.",
     )
+
+
+def _verify_slack_request(request: Request, raw_body: bytes) -> None:
+    signing_secret = os.getenv("SLACK_SIGNING_SECRET")
+    if not signing_secret:
+        if os.getenv("SLACK_ALLOW_UNSIGNED", "false").lower() == "true":
+            return
+        raise HTTPException(
+            status_code=400,
+            detail="Set SLACK_SIGNING_SECRET before accepting Slack requests.",
+        )
+
+    timestamp = request.headers.get("x-slack-request-timestamp")
+    signature = request.headers.get("x-slack-signature")
+    if not timestamp or not signature:
+        raise HTTPException(status_code=401, detail="Missing Slack signature headers.")
+
+    try:
+        request_time = int(timestamp)
+    except ValueError as exc:
+        raise HTTPException(status_code=401, detail="Invalid Slack timestamp.") from exc
+
+    if abs(time.time() - request_time) > 60 * 5:
+        raise HTTPException(status_code=401, detail="Slack request is too old.")
+
+    basestring = f"v0:{timestamp}:{raw_body.decode()}".encode()
+    expected = "v0=" + hmac.new(
+        signing_secret.encode(),
+        basestring,
+        hashlib.sha256,
+    ).hexdigest()
+
+    if not hmac.compare_digest(expected, signature):
+        raise HTTPException(status_code=401, detail="Invalid Slack signature.")
+
+
+@router.post("/slack/command", response_class=PlainTextResponse)
+async def create_task_from_slack_command(
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    raw_body = await request.body()
+    _verify_slack_request(request, raw_body)
+
+    form = await request.form()
+    text = str(form.get("text") or "").strip()
+    slack_user_id = str(form.get("user_id") or "unknown")
+    channel_id = str(form.get("channel_id") or "unknown")
+    trigger_id = str(form.get("trigger_id") or "")
+
+    if not text:
+        return "Usage: /task Fix the failed deployment"
+
+    default_user_email = os.getenv("SLACK_DEFAULT_USER_EMAIL")
+    if not default_user_email:
+        raise HTTPException(
+            status_code=400,
+            detail="Set SLACK_DEFAULT_USER_EMAIL to assign Slack tasks to a dashboard user.",
+        )
+
+    user = db.query(models.User).filter(models.User.email == default_user_email).first()
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No dashboard user found for {default_user_email}.",
+        )
+
+    external_id = trigger_id or hashlib.sha256(raw_body).hexdigest()
+    if _existing_external_id_for_user(db, user, "slack", external_id):
+        return "That Slack task was already added."
+
+    task = models.Task(
+        title=text[:255],
+        description=f"Created from Slack by user {slack_user_id} in channel {channel_id}.",
+        source="slack",
+        external_id=external_id,
+        priority="medium",
+        owner_id=user.id,
+    )
+    db.add(task)
+    db.commit()
+
+    return f"Task added to the dashboard: {task.title}"
