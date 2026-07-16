@@ -64,9 +64,12 @@ async function parseError(res: Response, fallback: string): Promise<Error> {
 }
 
 export async function getTasks(source?: string): Promise<Task[]> {
-  const url = new URL(`${API_URL}/tasks/`);
-  if (source && source !== "all") url.searchParams.set("source", source);
-  const res = await fetch(url, { headers: authHeaders() });
+  const params = new URLSearchParams();
+  if (source && source !== "all") params.set("source", source);
+  const query = params.toString();
+  const res = await fetch(`${API_URL}/tasks/${query ? `?${query}` : ""}`, {
+    headers: authHeaders(),
+  });
   if (!res.ok) throw new Error("Failed to load tasks");
   return res.json();
 }
