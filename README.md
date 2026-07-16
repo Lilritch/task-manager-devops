@@ -1,7 +1,9 @@
-# Cloud-Native Task Manager with DevOps Pipeline
+# DevOps Task Manager
 
-A task management app built to demonstrate a full production-style delivery pipeline:
-app code → containers → CI → Kubernetes → GitOps → monitoring.
+A task management app for tracking day-to-day engineering work across manual
+tasks, GitHub issues, failed CI runs, and Slack requests. The project also shows
+how the same app moves through containers, CI, Kubernetes, GitOps, and
+monitoring.
 
 ## Stack
 
@@ -10,14 +12,14 @@ app code → containers → CI → Kubernetes → GitOps → monitoring.
 - **Database:** PostgreSQL
 - **Containers:** Docker, Docker Compose
 - **CI:** GitHub Actions (lint, test, build, push image)
-- **Orchestration (later phase):** Kubernetes, Helm, Argo CD
-- **Monitoring (later phase):** Prometheus, Grafana
+- **Orchestration:** Kubernetes, Helm, Argo CD
+- **Monitoring:** Prometheus, Grafana
 
 ## Status
 
-- [x] Repo scaffold
-- [x] FastAPI backend skeleton (auth + task CRUD routes)
-- [x] Next.js frontend skeleton
+- [x] Repository setup
+- [x] FastAPI backend with auth and task CRUD
+- [x] Next.js frontend
 - [x] Dockerfiles + docker-compose for local dev
 - [x] GitHub Actions CI (lint/test/build)
 - [x] DevOps dashboard task sources and filters
@@ -63,8 +65,8 @@ Then rebuild the backend:
 docker compose up -d --build backend
 ```
 
-See `docs/devops-dashboard-roadmap.md` for the full GitHub, Slack, Calendar,
-notifications, and monitoring plan.
+See `docs/devops-dashboard-roadmap.md` for the GitHub, Slack, Calendar,
+notifications, and monitoring notes.
 
 ### Slack slash command
 
@@ -101,7 +103,7 @@ SLACK_ALLOW_UNSIGNED=true
 ├── k8s/               Kubernetes manifests
 ├── docker-compose.yml Local dev orchestration
 ├── .github/workflows/ CI pipeline
-├── helm/               (added in Phase 4)
+├── helm/               Helm chart
 └── README.md
 ```
 
@@ -119,5 +121,5 @@ See `k8s/README.md` for cluster setup, ingress, image, and secret steps.
 
 ## Roadmap
 
-See the step-by-step build roadmap in project notes — next up is wrapping the
-Kubernetes manifests into a Helm chart, then Argo CD and monitoring.
+Next up: wrap the Kubernetes manifests into a Helm chart, then add Argo CD and
+monitoring.

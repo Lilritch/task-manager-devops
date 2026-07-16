@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Task Manager",
-  description: "Cloud-native task manager with a full DevOps pipeline",
+  description: "Task dashboard for engineering work",
 };
 
 export default function RootLayout({

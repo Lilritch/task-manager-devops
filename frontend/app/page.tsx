@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-4">
       <h1 className="text-3xl font-bold">Task Manager</h1>
-      <p className="text-gray-600">Cloud-native task manager with a full DevOps pipeline.</p>
+      <p className="text-gray-600">A work queue for tasks, issues, and failed builds.</p>
       <div className="flex gap-3">
         <Link href="/login" className="rounded bg-black px-4 py-2 text-white">
           Log in
