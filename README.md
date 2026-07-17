@@ -145,6 +145,12 @@ It deploys the Helm chart from GitHub into the `task-manager-gitops` namespace.
 
 See `argocd/README.md` for install, login, and verification commands.
 
+## Monitoring
+
+The backend exposes Prometheus metrics at `/metrics`. When
+kube-prometheus-stack is installed, enable the chart's `ServiceMonitor` so
+Prometheus scrapes the FastAPI app.
+
 ## Roadmap
 
-Next up: add Prometheus and Grafana monitoring.
+Next up: add a Grafana dashboard for backend HTTP metrics.

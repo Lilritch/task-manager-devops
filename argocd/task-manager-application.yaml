@@ -13,6 +13,9 @@ spec:
       values: |
         ingress:
           host: task-manager-gitops.local
+        monitoring:
+          serviceMonitor:
+            enabled: true
   destination:
     server: https://kubernetes.default.svc
     namespace: task-manager-gitops

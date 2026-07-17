@@ -44,3 +44,10 @@ postgres:
   password: taskpass
   database: taskmanager
   storage: 1Gi
+
+monitoring:
+  serviceMonitor:
+    enabled: false
+    releaseLabel: monitoring
+    interval: 30s
+    path: /metrics

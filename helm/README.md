@@ -59,3 +59,19 @@ helm upgrade --install task-manager helm/task-manager \
 
 For real deployments, do not keep default secrets in `values.yaml`. Use
 environment-specific values or a secret manager.
+
+## Prometheus Metrics
+
+When kube-prometheus-stack is installed, enable backend scraping with:
+
+```bash
+helm upgrade --install task-manager helm/task-manager \
+  -n task-manager \
+  --set monitoring.serviceMonitor.enabled=true
+```
+
+The backend exposes metrics at:
+
+```text
+/metrics
+```
