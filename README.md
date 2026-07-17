@@ -28,7 +28,7 @@ monitoring.
 - [x] Slack slash-command endpoint
 - [x] Kubernetes manifests
 - [x] Helm chart
-- [ ] Argo CD GitOps deployment
+- [x] Argo CD GitOps deployment
 - [ ] Prometheus + Grafana
 - [ ] Architecture diagram
 
@@ -138,6 +138,13 @@ helm upgrade --install task-manager helm/task-manager -n task-manager-helm --cre
 
 See `helm/README.md` for chart values and verification commands.
 
+## Argo CD
+
+The Argo CD application manifest lives in `argocd/task-manager-application.yaml`.
+It deploys the Helm chart from GitHub into the `task-manager-gitops` namespace.
+
+See `argocd/README.md` for install, login, and verification commands.
+
 ## Roadmap
 
-Next up: add Argo CD GitOps deployment, then monitoring.
+Next up: add Prometheus and Grafana monitoring.
