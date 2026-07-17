@@ -1,6 +1,6 @@
-# Project Showcase
+# Project Screenshots
 
-This page collects the screenshots for the DevOps Task Manager portfolio README.
+This page collects the main app, GitOps, and monitoring screenshots.
 
 ## DevOps Task Dashboard
 

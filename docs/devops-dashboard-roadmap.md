@@ -1,12 +1,13 @@
 # DevOps Task Dashboard Roadmap
 
-This project starts as a manual task manager and grows into a DevOps dashboard.
-The dashboard can track manual tasks, GitHub issues, failed CI runs, and future
-Slack or Calendar tasks.
+This roadmap tracks how the task manager grows into a fuller DevOps dashboard.
+The current version handles manual tasks, GitHub issues, failed CI runs, and
+Slack-created tasks. Calendar sync and notifications are the next product
+features to add.
 
 ## Step 1: Manual Tasks
 
-This part is already built.
+This part is complete.
 
 Users can:
 
@@ -17,7 +18,7 @@ Users can:
 - Delete tasks
 - Filter tasks by source
 
-Manual task examples:
+Useful manual tasks:
 
 ```text
 Title: Create Kubernetes manifests
@@ -33,11 +34,11 @@ Priority: Medium
 
 ## Step 2: GitHub Issues Sync
 
-This part is built.
+This part is complete.
 
 The dashboard can import open GitHub issues and turn them into tasks.
 
-Example:
+Imported issue format:
 
 ```text
 GitHub issue: Fix Docker Compose port conflict
@@ -71,12 +72,12 @@ docker compose up -d --build backend
 
 ## Step 3: Failed GitHub Actions Sync
 
-This part is built.
+This part is complete.
 
 The dashboard can import failed GitHub Actions workflow runs as high-priority
 tasks.
 
-Example:
+Imported CI format:
 
 ```text
 Task title: Fix failed CI: CI
@@ -89,22 +90,22 @@ Use the same GitHub setup from Step 2.
 
 ## Step 4: Slack Sync
 
-The first Slack integration is built as a slash command endpoint.
+The first Slack integration is a slash command endpoint.
 
-Goal:
+Slack command:
 
 ```text
 /task Fix the failed production deployment
 ```
 
-Expected result:
+Dashboard result:
 
 ```text
 Source: Slack
 Title: Fix the failed production deployment
 ```
 
-Real Slack sync needs manual setup outside this repo:
+Slack still needs workspace setup outside this repo:
 
 1. Create a Slack app in your Slack workspace.
 2. Add a slash command such as `/task`.
@@ -117,8 +118,7 @@ POST /integrations/slack/command
 4. Store Slack secrets in `backend/.env`.
 5. Map Slack users to app users.
 
-For this first version, Slack tasks are assigned to one configured dashboard
-user:
+Slack tasks are assigned to one configured dashboard user:
 
 ```env
 SLACK_SIGNING_SECRET=your_slack_signing_secret
@@ -143,9 +143,11 @@ curl -X POST http://localhost:8000/integrations/slack/command \
 
 ## Step 5: Calendar Sync
 
-Calendar sync is useful for deadlines and deployment meetings.
+Calendar sync will make the dashboard useful for deadlines and deployment
+meetings.
 
-Real Calendar sync usually needs OAuth, so it is best after GitHub and Slack.
+Calendar sync usually needs OAuth, so it belongs after the GitHub and Slack
+flows are stable.
 
 Possible sources:
 
@@ -163,7 +165,8 @@ Source: Calendar
 
 ## Step 6: Notifications
 
-After external tasks are syncing, add notifications.
+After external tasks are syncing, notifications can make the dashboard more
+useful during daily work.
 
 Useful notifications:
 
@@ -180,13 +183,13 @@ Notification options:
 
 ## Step 7: Monitoring
 
-For the DevOps portfolio story, add:
+Monitoring is in place for the Kubernetes deployment:
 
 - `/metrics` endpoint in FastAPI
-- Prometheus
-- Grafana dashboard
+- Prometheus scraping through `ServiceMonitor`
+- Grafana dashboards for Kubernetes workload metrics
 
-Useful metrics:
+Useful app-level metrics to add next:
 
 - Total tasks created
 - Tasks imported from GitHub

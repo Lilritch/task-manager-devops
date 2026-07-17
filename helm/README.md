@@ -1,8 +1,8 @@
 # Helm Deployment
 
-This folder contains the Helm chart for the DevOps Task Manager app.
+This folder contains the Helm chart used for the Kubernetes deployment.
 
-## What Helm Deploys
+## Resources
 
 - Next.js frontend Deployment, Service, and Ingress
 - FastAPI backend Deployment, Service, and Ingress
@@ -16,9 +16,9 @@ helm lint helm/task-manager
 helm template task-manager helm/task-manager --namespace task-manager
 ```
 
-## Safe Test Install
+## Test Install
 
-Use a separate namespace so you do not disturb the raw Kubernetes deployment:
+Use a separate namespace when checking chart changes:
 
 ```bash
 helm upgrade --install task-manager helm/task-manager \
@@ -37,7 +37,7 @@ helm status task-manager -n task-manager-helm
 
 ## Main Install
 
-When you are ready to use Helm as the primary deployment method:
+Install the chart into the main namespace:
 
 ```bash
 helm upgrade --install task-manager helm/task-manager \
@@ -57,8 +57,8 @@ helm upgrade --install task-manager helm/task-manager \
   --set app.githubRepo=task-manager-devops
 ```
 
-For real deployments, do not keep default secrets in `values.yaml`. Use
-environment-specific values or a secret manager.
+For deployed environments, replace the default values with environment-specific
+settings or a secret manager.
 
 ## Prometheus Metrics
 

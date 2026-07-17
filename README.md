@@ -1,9 +1,9 @@
 # DevOps Task Manager
 
-A task management app for tracking day-to-day engineering work across manual
-tasks, GitHub issues, failed CI runs, and Slack requests. The project also shows
-how the same app moves through containers, CI, Kubernetes, GitOps, and
-monitoring.
+DevOps Task Manager is a work dashboard for engineering tasks. It keeps manual
+tasks, GitHub issues, failed CI runs, and Slack requests in one queue, then
+deploys the same app through Docker, Kubernetes, Helm, Argo CD, Prometheus, and
+Grafana.
 
 ## Stack
 
@@ -46,9 +46,9 @@ docker compose up --build
 
 ## DevOps dashboard integrations
 
-The dashboard supports manual tasks, GitHub Issues imports, and failed GitHub
-Actions imports. It also includes a Slack slash-command endpoint for creating
-tasks from Slack once you configure a Slack app.
+The dashboard can create tasks directly, import open GitHub issues, and turn
+failed GitHub Actions runs into high-priority work items. A Slack slash command
+can also create dashboard tasks from a workspace channel.
 
 For public repositories, log in and enter the GitHub owner/repo on the tasks
 page. For private repositories, add a GitHub token to `backend/.env`:
@@ -66,7 +66,7 @@ docker compose up -d --build backend
 ```
 
 See `docs/devops-dashboard-roadmap.md` for the GitHub, Slack, Calendar,
-notifications, and monitoring notes.
+notifications, and monitoring plan.
 
 ### Slack slash command
 
@@ -76,7 +76,7 @@ The backend endpoint is:
 POST /integrations/slack/command
 ```
 
-Manual setup required:
+Slack setup:
 
 1. Create a Slack app.
 2. Add a slash command like `/task`.
@@ -94,14 +94,14 @@ For local curl testing only:
 SLACK_ALLOW_UNSIGNED=true
 ```
 
-## Project structure
+## Project Structure
 
 ```
 .
 ├── frontend/          Next.js app
 ├── backend/           FastAPI app
 ├── k8s/               Kubernetes manifests
-├── docker-compose.yml Local dev orchestration
+├── docker-compose.yml Local development stack
 ├── .github/workflows/ CI pipeline
 ├── helm/               Helm chart
 └── README.md
@@ -154,7 +154,7 @@ Prometheus scrapes the FastAPI app.
 ## Screenshots
 
 Screenshot files and naming instructions live in `docs/screenshots`.
-Use `docs/showcase.md` as the project showcase page.
+Use `docs/screenshots.md` for the project screenshots and deployment proof.
 
 ## Roadmap
 

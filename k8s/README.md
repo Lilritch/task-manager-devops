@@ -1,6 +1,6 @@
 # Kubernetes Deployment
 
-These manifests deploy the full task manager stack:
+These manifests run the task manager stack on Kubernetes:
 
 - PostgreSQL database
 - FastAPI backend
@@ -33,9 +33,9 @@ k8s/base/backend-ingress.yaml
 k8s/base/frontend-ingress.yaml
 ```
 
-## Manual Setup
+## Cluster Setup
 
-You need a Kubernetes cluster first.
+Use any local Kubernetes cluster.
 
 Good local options:
 
@@ -57,7 +57,7 @@ For Docker Desktop Kubernetes, install ingress-nginx:
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.13.3/deploy/static/provider/cloud/deploy.yaml
 ```
 
-## Image Setup
+## Images
 
 The manifests use GitHub Container Registry images:
 
@@ -66,17 +66,17 @@ ghcr.io/lilritch/task-manager-devops/backend:latest
 ghcr.io/lilritch/task-manager-devops/frontend:latest
 ```
 
-After pushing to GitHub, the CI workflow builds and pushes those images.
+The CI workflow builds and pushes these images after changes land on GitHub.
 
-If Kubernetes cannot pull them, do one of these:
+If Kubernetes cannot pull them:
 
 1. Make the GHCR packages public in GitHub.
 2. Create an image pull secret for GHCR.
 3. For local kind/minikube testing, build and load local images.
 
-## Configure Secrets
+## Secrets
 
-Before a real deployment, edit:
+Before deploying outside local development, edit:
 
 ```text
 k8s/base/app-secret.yaml
@@ -90,20 +90,20 @@ SECRET_KEY
 POSTGRES_PASSWORD
 ```
 
-For GitHub private repo sync, set:
+For private GitHub repo sync, set:
 
 ```text
 GITHUB_TOKEN
 ```
 
-For Slack sync in a public deployment, set:
+For Slack sync, set:
 
 ```text
 SLACK_SIGNING_SECRET
 SLACK_DEFAULT_USER_EMAIL
 ```
 
-Do not commit real production secrets to GitHub.
+Keep real production secrets out of GitHub.
 
 ## Deploy
 
@@ -123,7 +123,7 @@ kubectl get ingress -n task-manager
 
 ## Local Hostname
 
-For local ingress testing, point `task-manager.local` to your cluster ingress IP.
+For ingress testing, point `task-manager.local` to the cluster ingress IP.
 
 For minikube:
 

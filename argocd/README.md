@@ -1,6 +1,7 @@
 # Argo CD GitOps
 
-Argo CD watches the GitHub repository and deploys the Helm chart automatically.
+Argo CD watches the GitHub repository and keeps the Kubernetes deployment in
+sync with the Helm chart.
 
 ## Install Argo CD
 
@@ -15,19 +16,19 @@ Wait for Argo CD:
 kubectl get pods -n argocd
 ```
 
-## Create The Task Manager App
+## Create The Application
 
 ```bash
 kubectl apply -f argocd/task-manager-application.yaml
 ```
 
-Argo CD will deploy the Helm chart from:
+The application points Argo CD at this chart:
 
 ```text
 helm/task-manager
 ```
 
-into:
+and deploys it into:
 
 ```text
 task-manager-gitops
@@ -59,7 +60,7 @@ kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.pas
 
 ## Local Host Entry
 
-To view the GitOps-deployed app in a browser, add this to `/etc/hosts`:
+To open the GitOps deployment in a browser, add this to `/etc/hosts`:
 
 ```text
 127.0.0.1 task-manager-gitops.local
