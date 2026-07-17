@@ -29,7 +29,7 @@ monitoring.
 - [x] Kubernetes manifests
 - [x] Helm chart
 - [x] Argo CD GitOps deployment
-- [ ] Prometheus + Grafana
+- [x] Prometheus + Grafana
 - [ ] Architecture diagram
 
 ## Local development
@@ -150,6 +150,11 @@ See `argocd/README.md` for install, login, and verification commands.
 The backend exposes Prometheus metrics at `/metrics`. When
 kube-prometheus-stack is installed, enable the chart's `ServiceMonitor` so
 Prometheus scrapes the FastAPI app.
+
+## Screenshots
+
+Screenshot files and naming instructions live in `docs/screenshots`.
+Use `docs/showcase.md` as the project showcase page.
 
 ## Roadmap
 
