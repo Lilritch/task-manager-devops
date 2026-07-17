@@ -30,7 +30,7 @@ Grafana.
 - [x] Helm chart
 - [x] Argo CD GitOps deployment
 - [x] Prometheus + Grafana
-- [ ] Architecture diagram
+- [x] Architecture diagram
 
 ## Local development
 
@@ -103,9 +103,16 @@ SLACK_ALLOW_UNSIGNED=true
 ├── k8s/               Kubernetes manifests
 ├── docker-compose.yml Local development stack
 ├── .github/workflows/ CI pipeline
+├── argocd/             Argo CD application manifest
+├── docs/               Architecture notes and screenshots
 ├── helm/               Helm chart
 └── README.md
 ```
+
+## Architecture
+
+The architecture notes live in `docs/architecture.md`. They cover the app flow,
+CI/CD flow, Kubernetes runtime layout, and monitoring path.
 
 ## Kubernetes
 
